@@ -5,7 +5,7 @@
 //
 
 #include "gtest/gtest.h"
-#include "../roots_library/library.h"
+#include "../roots_library/test_library_.h"
 
 TEST(HelloTest, TestPrintHello){
     testing::internal::CaptureStdout();
