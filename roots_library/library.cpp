@@ -142,12 +142,6 @@ double approximateRoot(const double* polynomial, const int polyLen, double lowLi
     return (lowLimit + highLimit) / 2;
 }
 
-
-void differentiate(double* differentiated, double const* polynomial, int len) {
-    for (int i = 0; i < (len - 1); i++) {
-        differentiated[i] = polynomial[i + 1] * (i + 1);
-    }
-}
 void differentiateWithDivisor(double* differentiated, double const* polynomial, int polyLen, int divisor) {
     for (int i = 0; i < (polyLen - 1); i++) {
         differentiated[i] = polynomial[i + 1] * (i + 1) / divisor;

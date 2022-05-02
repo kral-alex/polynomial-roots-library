@@ -46,8 +46,6 @@ int findRoots_(double*, const double*, int, const double*, int, unsigned long);
 
 double approximateRoot(const double*, int, double, double, unsigned long);
 
-void differentiate(double*, double const*, int);
-
 void differentiateWithDivisor(double*, double const*, int, int);
 
 double solveForX(const double*, int, double);
