@@ -1,5 +1,3 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "cert-err58-cpp"
 //
 // Created by Alex Král on 02.05.2022.
 //
@@ -7,11 +5,11 @@
 #include "gtest/gtest.h"
 #include "../roots_library/library.h"
 
-TEST(RootsValidity, SetMakesZero) {
+TEST(Rootsvalidity, SetMakesZero) {
 
 }
 
-TEST(RootsValidity, RandomMakesZero) {
+TEST(Rootsvalidity, RandomMakesZero) {
     const int len = 50;
     const  int bit_precision = 3;
     auto input = Array<double>(len);
@@ -26,12 +24,9 @@ TEST(RootsValidity, RandomMakesZero) {
     const auto topRoots = dummyRoots.const_slice(- len + 1, 0);
     const int topCount = dummyCounts[len - 2];
 
-    ASSERT_NE(len % 2, topCount % 2);
-
     for (int i = 0; i < topCount; i++) {
         double res = solveForX(topPolynomial->array(), len, (*topRoots)[i]);
         // EXPECT_DOUBLE_EQ(res, 0.);
         EXPECT_EQ(res, 0.);
     }
 }
-#pragma clang diagnostic pop
