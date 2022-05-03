@@ -13,13 +13,6 @@
 #error "Requires IEEE 754 floating point!"
 #endif
 
-typedef struct ArrayLen {
-    int count;
-    int len;
-    double* array;
-} ArrayLen;
-
-
 /* two problems I know of for equalsPrecise:
  *  when the difference overflows further into the mantissa
  *  when the (even one bit) difference overflows into a one bit difference in the exponent
