@@ -19,17 +19,20 @@
 
 
 Array<double>* preProcess(const double*, int);
+
 Array<double>* preProcess(Array<double>&);
+
+void preProcess(const double*, int, double*);
 
 int findRoots(const double*, int, double*, unsigned);
 
-void findRootsIterate_(Array<double>&, Array<int>&, const Array<double>&, int, unsigned long);
+void findRootsIterate_(Array<double>&, Array<int>&, const Array<double>&, int, unsigned);
 
-void findRootsIterate_(double*, int*, const double*, int, unsigned long);
+void findRootsIterate_(double*, int*, const double*, int, unsigned);
 
-int searchBetweenPeaks_(double*, const double*, int, const double*, int, unsigned long);
+int searchBetweenPeaks_(double*, const double*, int, const double*, int, unsigned);
 
-double approximateRoot(const double*, int, double, double, unsigned long);
+double approximateRoot(const double*, int, double, double, unsigned);
 
 void differentiateWithDivisor(double*, double const*, int, int);
 

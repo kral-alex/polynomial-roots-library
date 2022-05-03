@@ -8,14 +8,16 @@
 
 
 int findRoots(const double* polynomial, const int len, double* roots, unsigned bitPrecision) {
-    const auto* polynomialRow = preProcess(polynomial, len);
+    auto polynomialRow = Array<double>((len + 1) * len / 2 - 1);
+    preProcess(polynomial, len, polynomialRow.array());
+
     auto allRoots = Array<double>((len - 1) * len / 2);
     auto rootCounts = Array<int>(len - 1);
 
-    findRootsIterate_(allRoots.array(), rootCounts.array(), polynomialRow->array(), len, bitPrecision);
+    findRootsIterate_(allRoots.array(), rootCounts.array(), polynomialRow.array(), len, bitPrecision);
 
-    auto rootCount = rootCounts[rootCounts.len() - 1];
-    memcpy(allRoots.array(), roots, rootCount * sizeof(double));
+    int rootCount = rootCounts[rootCounts.len() - 1];
+    memcpy(roots, allRoots.array() + allRoots.len() - len + 1, rootCount * sizeof(double));
 
     return rootCount;
 }
@@ -52,7 +54,20 @@ Array<double>* preProcess(const double* polynomial, const int n) {
     return polynomialRow;
 }
 
-void findRootsIterate(Array<double>& allRoots, Array<int>& rootCounts, const Array<double>& polynomialRow, const int originalPolyLen, const unsigned long precision) {
+void preProcess(const double* polynomial, const int n, double* polynomialRow) {
+    int currLen = n;
+    int pRLen = n * (n + 1) / 2 - 1;
+    double *differentiated;
+    differentiated = polynomialRow + pRLen - n;
+    memcpy(differentiated, polynomial, n * sizeof(double));
+    for (int i = 0; i < n - 1; i++) {
+        differentiateWithDivisor(differentiated - currLen + 1, differentiated, currLen, i + 1);
+        currLen--;
+        differentiated -= currLen;
+    }
+}
+
+void findRootsIterate_(Array<double>& allRoots, Array<int>& rootCounts, const Array<double>& polynomialRow, const int originalPolyLen, const unsigned precision) {
     int headInRow, headInRoots;
     const double zero = 0.;
     if (EQ_ZERO(polynomialRow[0])) {
