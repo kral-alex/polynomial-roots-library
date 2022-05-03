@@ -63,21 +63,21 @@ void findRootsIterate(Array<double>& allRoots, Array<int>& rootCounts, const Arr
     }
 }
 
-int findRoots(ArrayLen newRoots, const ArrayLen oldRoots, const ArrayLen polynomial, const unsigned long precision) {
+int findRoots(double* newRoots, const double* oldRoots, const int oldRootCount, const double* polynomial, const int polyLen, const unsigned long precision) {
     double currValue, nextValue;
     bool currSign, nextSign;
     int newRootCount = 0;
-    bool leadingSign = signbit(polynomial.array[polynomial.len - 1]);
-    bool evenFunc = polynomial.len & 0b1;
+    bool leadingSign = signbit(polynomial[polyLen - 1]);
+    bool evenFunc = polyLen & 0b1;
 
-    currValue = solveForX(polynomial, oldRoots.array[0]);  // polynomial.array == pointer to first element
+    currValue = solveForX(polynomial, polyLen, oldRoots[0]);
     currSign = signbit(currValue);
 
     // if not zero and either is falling down and crit point is positive or is rising up and crit point is negative
     if ( !EQ_ZERO(currValue) && (currSign != (evenFunc == leadingSign))) {  // falling down (true) if the function is even and negative or odd and positive
         //
         unsigned int i = 1;
-        double value = solveForX(polynomial.array, polynomial.len, oldRoots.array[0] - i);
+        double value = solveForX(polynomial, polyLen, oldRoots[0] - i);
         while (currSign == signbit(value)) {
             i = i << 1;
             value = solveForX(polynomial, polyLen, oldRoots[0] - i);
@@ -95,9 +95,9 @@ int findRoots(ArrayLen newRoots, const ArrayLen oldRoots, const ArrayLen polynom
             newRoots[newRootCount] = oldRoots[i];
             newRootCount++;
         } else if (currSign != nextSign) {  // even if the sign is the same, the next can be a saddle, thus there can be a root after the next
-                newRoots[newRootCount] = approximateRoot(polynomial, polyLen, oldRoots[i], oldRoots[i + 1], precision);
-                newRootCount++;
-            }
+            newRoots[newRootCount] = approximateRoot(polynomial, polyLen, oldRoots[i], oldRoots[i + 1], precision);
+            newRootCount++;
+        }
         currValue = nextValue;
         currSign = nextSign;
     }
@@ -152,15 +152,6 @@ double solveForX(const double* polynomial, const int polyLen, double x) {
     double sum = 0.;
     for (int i = 0; i < polyLen; i++) {
         sum += polynomial[i] * std::pow(x, i);
-        if (std::isnan(sum)) throw std::exception();
-    }
-    return sum;
-}
-
-double solveForX(const ArrayLen polynomial, double x) {
-    double sum = 0.;
-    for (int i = 0; i < polynomial.len; i++) {
-        sum += polynomial.array[i] * std::pow(x, i);
         if (std::isnan(sum)) throw std::exception();
     }
     return sum;

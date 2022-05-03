@@ -58,8 +58,6 @@ void differentiateWithDivisor(double*, double const*, int, int);
 
 double solveForX(const double*, int, double);
 
-double solveForX(const ArrayLen, double);
-
 inline void formula_linear_(double* root, double const* poly) {
     if (poly[1] == 0.) throw std::exception();
     *root = -poly[0] / poly[1];
