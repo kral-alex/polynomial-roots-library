@@ -17,12 +17,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1ae39afb-5e03-4f9f-943e-1d907c96e17f" name="Changes" comment="no ArrayLen">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Google_tests/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Google_tests/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Google_tests/RootsTest.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Google_tests/RootsTest.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roots_library/library.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/roots_library/library.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roots_library/library.h" beforeDir="false" afterPath="$PROJECT_DIR$/roots_library/library.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roots_library/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/roots_library/main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
