@@ -16,10 +16,13 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1ae39afb-5e03-4f9f-943e-1d907c96e17f" name="Changes" comment="before arraylen + test">
+    <list default="true" id="1ae39afb-5e03-4f9f-943e-1d907c96e17f" name="Changes" comment="no ArrayLen">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Google_tests/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Google_tests/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Google_tests/RootsTest.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Google_tests/RootsTest.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/roots_library/library.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/roots_library/library.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/roots_library/library.h" beforeDir="false" afterPath="$PROJECT_DIR$/roots_library/library.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roots_library/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/roots_library/main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,6 +46,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="e629c06bde9bc2adb0258b5f740823759fe353af" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitSEFilterConfiguration">
@@ -92,18 +100,18 @@
     </key>
   </component>
   <component name="RunManager" selected="Google Test.Google_Tests_run">
-    <configuration name="Google_Tests_run" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="RootsLib" TARGET_NAME="Google_Tests_run" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="RootsLib" RUN_TARGET_NAME="Google_Tests_run" TEST_MODE="SUITE_TEST">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Google_Tests_run" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" PROGRAM_PARAMS="-lgtest -lgtest_main" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="RootsLib" TARGET_NAME="Google_Tests_run" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="RootsLib" RUN_TARGET_NAME="Google_Tests_run" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
         <option name="BeforeTestRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="RootsLib" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="RootsLib" TARGET_NAME="RootsLib" CONFIG_NAME="Debug">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -147,6 +155,7 @@
       <updated>1651491887836</updated>
       <workItem from="1651491889108" duration="3467000" />
       <workItem from="1651517632674" duration="6362000" />
+      <workItem from="1651581092114" duration="2743000" />
     </task>
     <task id="LOCAL-00001" summary="initial files">
       <created>1651514999358</created>
@@ -197,7 +206,28 @@
       <option name="project" value="LOCAL" />
       <updated>1651571246496</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="no ArrayLen">
+      <created>1651575164180</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1651575164180</updated>
+    </task>
+    <task id="LOCAL-00009" summary="no ArrayLen">
+      <created>1651575182830</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1651575182830</updated>
+    </task>
+    <task id="LOCAL-00010" summary="no ArrayLen">
+      <created>1651575186004</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1651575186004</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -220,6 +250,7 @@
     <MESSAGE value="new files" />
     <MESSAGE value="delete differentiate" />
     <MESSAGE value="before arraylen + test" />
-    <option name="LAST_COMMIT_MESSAGE" value="before arraylen + test" />
+    <MESSAGE value="no ArrayLen" />
+    <option name="LAST_COMMIT_MESSAGE" value="no ArrayLen" />
   </component>
 </project>

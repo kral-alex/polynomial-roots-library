@@ -13,6 +13,34 @@
 #error "Requires IEEE 754 floating point!"
 #endif
 
+#define EPSILON (__DBL_MIN__ * 64)
+#define EQ_ZERO(x) ((x) < EPSILON && (x) > -(EPSILON))
+#define IS_ZERO(x) ((x) == 0. || (x) == -0.)
+
+
+Array<double>* preProcess(const double*, int);
+Array<double>* preProcess(Array<double>&);
+
+int findRoots(const double*, int, double*, unsigned);
+
+void findRootsIterate_(Array<double>&, Array<int>&, const Array<double>&, int, unsigned long);
+
+void findRootsIterate_(double*, int*, const double*, int, unsigned long);
+
+int searchBetweenPeaks_(double*, const double*, int, const double*, int, unsigned long);
+
+double approximateRoot(const double*, int, double, double, unsigned long);
+
+void differentiateWithDivisor(double*, double const*, int, int);
+
+double solveForX(const double*, int, double);
+
+
+inline void formula_linear_(double* root, double const* poly) {
+    if (poly[1] == 0.) throw std::exception();
+    *root = -poly[0] / poly[1];
+}
+
 /* two problems I know of for equalsPrecise:
  *  when the difference overflows further into the mantissa
  *  when the (even one bit) difference overflows into a one bit difference in the exponent
@@ -31,29 +59,6 @@ inline bool equalsPrecise(double a, double b, unsigned long sig_dig_precision) {
     u_int64_t c = (*reinterpret_cast<u_int64_t*>(&b) - *reinterpret_cast<u_int64_t*>(&a));
     return !(c >> (sig_dig_precision + 1) && ~c >> sig_dig_precision); // exact with zero tolerance -> && (sig_dig_precision && ~c >> (sig_dig_precision -1)))
     // TODO compare with bit shift epsilon
-}
-
-#define EPSILON (__DBL_MIN__ * 64)
-#define EQ_ZERO(x) ((x) < EPSILON && (x) > -(EPSILON))
-#define IS_ZERO(x) ((x) == 0. || (x) == -0.)
-
-
-Array<double>* preProcess(const double*, int);
-Array<double>* preProcess(Array<double>&);
-
-void findRootsIterate(Array<double>&, Array<int>&, const Array<double>&, int, unsigned long);
-
-int findRoots(double*, const double*, int, const double*, int, unsigned long);
-
-double approximateRoot(const double*, int, double, double, unsigned long);
-
-void differentiateWithDivisor(double*, double const*, int, int);
-
-double solveForX(const double*, int, double);
-
-inline void formula_linear_(double* root, double const* poly) {
-    if (poly[1] == 0.) throw std::exception();
-    *root = -poly[0] / poly[1];
 }
 
 template<class T>

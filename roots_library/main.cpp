@@ -22,7 +22,7 @@ int main() {
     //auto dummyCounts = std::make_unique<Array<int>>(LEN - 1);
     Array<double> dummyRoots = Array<double>((LEN - 1) * LEN / 2);
     Array<int> dummyCounts = Array<int>(LEN - 1);
-    findRootsIterate(dummyRoots, dummyCounts, *polynomialRow, LEN, BIT_PRECISION);
+    findRootsIterate_(dummyRoots, dummyCounts, *polynomialRow, LEN, BIT_PRECISION);
     //std::cout << dummyRoots;
     //std::cout << dummyCounts;
     printRoots(dummyRoots, dummyCounts);
