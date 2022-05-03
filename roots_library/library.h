@@ -13,6 +13,13 @@
 #error "Requires IEEE 754 floating point!"
 #endif
 
+typedef struct ArrayLen {
+    int len;
+    int max;
+    double* array;
+} ArrayLen;
+
+
 /* two problems I know of for equalsPrecise:
  *  when the difference overflows further into the mantissa
  *  when the (even one bit) difference overflows into a one bit difference in the exponent
@@ -34,7 +41,8 @@ inline bool equalsPrecise(double a, double b, unsigned long sig_dig_precision) {
 }
 
 #define EPSILON (__DBL_MIN__ * 64)
-#define IS_ZERO(x) ((x) < EPSILON && (x) > -(EPSILON))
+#define EQ_ZERO(x) ((x) < EPSILON && (x) > -(EPSILON))
+#define IS_ZERO(x) ((x) == 0. || (x) == -0.)
 
 
 Array<double>* preProcess(const double*, int);

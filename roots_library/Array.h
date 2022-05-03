@@ -17,6 +17,8 @@ class Array{
     unsigned len_;
     bool owner_ = true;
 
+    Array(): len_(0) {}
+
     class Proxy {
         friend Array;
         T* pointer;
@@ -42,6 +44,10 @@ public:
 
     Array& operator= (const Array& a) =delete;
 
+    void shorten(int n) {
+        len_ -= n;
+    }
+
     Array& slice(int start, int end) const {
         if (start < 0) start = len_ - start;
         if (end < 0) end = len_ - end;
@@ -51,14 +57,14 @@ public:
         return *a;
     }
 
-    const Array& slice(int start, int end) {
+    const Array* const_slice(int start, int end) {
         if (start < 0) start = len_ - start;
         if (end < 0) end = len_ - end;
-        Array a;
-        a.owner_ = false;
-        a.array_ = array_ + start;
-        a.len_ = len_ - (start + end);
-        return *a;
+        auto a = new Array();
+        a->owner_ = false;
+        a->array_ = array_ + start;
+        a->len_ = len_ - (start + end);
+        return a;
     }
 
     ~Array() {
