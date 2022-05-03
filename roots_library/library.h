@@ -14,8 +14,8 @@
 #endif
 
 typedef struct ArrayLen {
+    int count;
     int len;
-    int max;
     double* array;
 } ArrayLen;
 
@@ -50,13 +50,15 @@ Array<double>* preProcess(Array<double>&);
 
 void findRootsIterate(Array<double>&, Array<int>&, const Array<double>&, int, unsigned long);
 
-int findRoots_(double*, const double*, int, const double*, int, unsigned long);
+int findRoots(double*, const double*, int, const double*, int, unsigned long);
 
 double approximateRoot(const double*, int, double, double, unsigned long);
 
 void differentiateWithDivisor(double*, double const*, int, int);
 
 double solveForX(const double*, int, double);
+
+double solveForX(const ArrayLen, double);
 
 inline void formula_linear_(double* root, double const* poly) {
     if (poly[1] == 0.) throw std::exception();

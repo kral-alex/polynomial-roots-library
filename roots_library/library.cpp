@@ -51,7 +51,7 @@ void findRootsIterate(Array<double>& allRoots, Array<int>& rootCounts, const Arr
     headInRow = 2;
     headInRoots = 1;
     for (int currLen = 3; currLen <= originalPolyLen; currLen++) {
-        rootCounts[currLen - 2] = findRoots_(
+        rootCounts[currLen - 2] = findRoots(
                 allRoots.array() + headInRoots,
                 *(rootCounts.array() + currLen - 3) ? allRoots.array() + headInRoots - (currLen - 2) : &zero,
                 *(rootCounts.array() + currLen - 3) ? *(rootCounts.array() + currLen - 3) : 1,
@@ -63,21 +63,21 @@ void findRootsIterate(Array<double>& allRoots, Array<int>& rootCounts, const Arr
     }
 }
 
-int findRoots_(double* newRoots, const double* oldRoots, const int oldRootCount, const double* polynomial, const int polyLen, const unsigned long precision) {
+int findRoots(ArrayLen newRoots, const ArrayLen oldRoots, const ArrayLen polynomial, const unsigned long precision) {
     double currValue, nextValue;
     bool currSign, nextSign;
     int newRootCount = 0;
-    bool leadingSign = signbit(polynomial[polyLen - 1]);
-    bool evenFunc = polyLen & 0b1;
+    bool leadingSign = signbit(polynomial.array[polynomial.len - 1]);
+    bool evenFunc = polynomial.len & 0b1;
 
-    currValue = solveForX(polynomial, polyLen, oldRoots[0]);
+    currValue = solveForX(polynomial, oldRoots.array[0]);  // polynomial.array == pointer to first element
     currSign = signbit(currValue);
 
     // if not zero and either is falling down and crit point is positive or is rising up and crit point is negative
     if ( !EQ_ZERO(currValue) && (currSign != (evenFunc == leadingSign))) {  // falling down (true) if the function is even and negative or odd and positive
         //
         unsigned int i = 1;
-        double value = solveForX(polynomial, polyLen, oldRoots[0] - i);
+        double value = solveForX(polynomial.array, polynomial.len, oldRoots.array[0] - i);
         while (currSign == signbit(value)) {
             i = i << 1;
             value = solveForX(polynomial, polyLen, oldRoots[0] - i);
@@ -152,6 +152,15 @@ double solveForX(const double* polynomial, const int polyLen, double x) {
     double sum = 0.;
     for (int i = 0; i < polyLen; i++) {
         sum += polynomial[i] * std::pow(x, i);
+        if (std::isnan(sum)) throw std::exception();
+    }
+    return sum;
+}
+
+double solveForX(const ArrayLen polynomial, double x) {
+    double sum = 0.;
+    for (int i = 0; i < polynomial.len; i++) {
+        sum += polynomial.array[i] * std::pow(x, i);
         if (std::isnan(sum)) throw std::exception();
     }
     return sum;

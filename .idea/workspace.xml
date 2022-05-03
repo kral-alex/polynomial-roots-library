@@ -16,10 +16,8 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1ae39afb-5e03-4f9f-943e-1d907c96e17f" name="Changes" comment="delete differentiate">
+    <list default="true" id="1ae39afb-5e03-4f9f-943e-1d907c96e17f" name="Changes" comment="before arraylen + test">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Google_tests/RootsTest.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Google_tests/RootsTest.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roots_library/Array.h" beforeDir="false" afterPath="$PROJECT_DIR$/roots_library/Array.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/roots_library/library.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/roots_library/library.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/roots_library/library.h" beforeDir="false" afterPath="$PROJECT_DIR$/roots_library/library.h" afterDir="false" />
     </list>
@@ -148,7 +146,7 @@
       <option name="presentableId" value="Default" />
       <updated>1651491887836</updated>
       <workItem from="1651491889108" duration="3467000" />
-      <workItem from="1651517632674" duration="4443000" />
+      <workItem from="1651517632674" duration="6362000" />
     </task>
     <task id="LOCAL-00001" summary="initial files">
       <created>1651514999358</created>
@@ -185,7 +183,21 @@
       <option name="project" value="LOCAL" />
       <updated>1651518630025</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="before arraylen + test">
+      <created>1651570541407</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1651570541407</updated>
+    </task>
+    <task id="LOCAL-00007" summary="before arraylen + test">
+      <created>1651571246496</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1651571246496</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -207,17 +219,7 @@
     <MESSAGE value="initial files 2" />
     <MESSAGE value="new files" />
     <MESSAGE value="delete differentiate" />
-    <option name="LAST_COMMIT_MESSAGE" value="delete differentiate" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/Google_tests/RootsTest.cpp</url>
-          <line>27</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="before arraylen + test" />
+    <option name="LAST_COMMIT_MESSAGE" value="before arraylen + test" />
   </component>
 </project>
