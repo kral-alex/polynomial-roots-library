@@ -10,14 +10,15 @@ TEST(RootsValidity, SetMakesZero) {
 }
 
 TEST(RootsValidity, RandomMakesZero) {
-    const int len = 50;
+    int len = 50;
     const unsigned bit_precision = 3;
     auto input = Array<double>(len);
 
     srandom(time(nullptr));
 
     for (int i = 0; i < len; i++) input[i] = (double)(random() & 0b1111111111111) * ((random() & 1) ? 1: -1);
-    auto polynomialRow = preProcess(input);
+    auto polynomialRow = std::unique_ptr<Array<double>>(preProcess(input));
+    //auto polynomialRow = *preProcess(input);
     auto dummyRoots = Array<double>((len - 1) * len / 2);
     auto dummyCounts = Array<int>(len - 1);
     findRootsIterate_(dummyRoots, dummyCounts, *polynomialRow, len, bit_precision);
@@ -29,14 +30,14 @@ TEST(RootsValidity, RandomMakesZero) {
 
     ASSERT_NE(len % 2, topCount % 2);
 
-    //std::cout << std::setprecision(10) << std::fixed;
     std::cout << std::scientific << std::setprecision(17);
     std::cout << "#roots: "<< topCount << "\n";
 
     for (int i = 0; i < topCount; i++) {
-        double res = solveForX(topPolynomial->array(), len, (*topRoots)[i]);
-        std::cout << dummyRoots[i] << ": " << res << "\n";
+        double res = solveForX(topPolynomial->array(), len, (double)(*topRoots)[i]);
+        std::cout << (*topRoots)[i] << ": " << res << "\n";
         // EXPECT_DOUBLE_EQ(res, 0.);
+        EXPECT_NE((double)(*topRoots)[i], 0.);
         EXPECT_NEAR(res, 0., 10e-32);
     }
 }
@@ -51,7 +52,8 @@ TEST(RootsValidity, RandomRootCheck) {
 
     for (int i = 0; i < len; i++) input[i] = (double)(random() & 0b1111111111111) * ((random() & 1) ? 1: -1);
 
-    int rootCount = findRoots(input.array(), len, output.array(), bit_precision);
+    //int rootCount = findRoots(input.array(), len, output.array(), bit_precision);
+    int rootCount = findRoots(input, len, output.array(), bit_precision);
 
     ASSERT_NE(len % 2, rootCount % 2);
 

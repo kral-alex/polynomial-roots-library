@@ -19,6 +19,11 @@ class Array{
 
     Array(): len_(0) {}
 
+    Array(const Array& a): len_(a.len_) {
+        array_ = static_cast<T*>(malloc(len_ * sizeof(T)));
+        memcpy(array_, a.array_, sizeof(T) * len_);
+    }
+
     class Proxy {
         friend Array;
         T* pointer;
@@ -37,11 +42,6 @@ public:
         if (array_ == NULL) throw std::runtime_error("malloc failed");
     }
 
-    Array(const Array& a): len_(a.len_) {
-        array_ = static_cast<T*>(malloc(len_ * sizeof(T)));
-        memcpy(array_, a.array_, sizeof(T) * len_);
-    }
-
     Array& operator= (const Array& a) =delete;
 
     void shorten(int n) {
@@ -58,8 +58,8 @@ public:
     }
 
     const Array* const_slice(int start, int end) {
-        if (start < 0) start = len_ - start;
-        if (end < 0) end = len_ - end;
+        if (start < 0) start = len_ + start;
+        if (end < 0) end = len_ + end;
         auto a = new Array();
         a->owner_ = false;
         a->array_ = array_ + start;

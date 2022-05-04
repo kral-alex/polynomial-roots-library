@@ -10,19 +10,53 @@
 int findRoots(const double* polynomial, int len, double* roots, unsigned bitPrecision) {
     //auto polynomialRow = Array<double>((len + 1) * len / 2 - 1);
     //preProcess(polynomial, len, polynomialRow.array());
-    auto polynomialRow = *preProcess(polynomial, len);
+    auto polynomialRow = preProcess(polynomial, len);
 
     auto allRoots = Array<double>((len - 1) * len / 2);
     auto rootCounts = Array<int>(len - 1);
 
     // findRootsIterate_(allRoots.array(), rootCounts.array(), polynomialRow.array(), len, bitPrecision);
-    findRootsIterate_(allRoots, rootCounts, polynomialRow, len, bitPrecision);
+    findRootsIterate_(allRoots, rootCounts, *polynomialRow, len, bitPrecision);
 
     int rootCount = rootCounts[rootCounts.len() - 1];
-    memcpy(roots, allRoots.array() + allRoots.len() - len + 1, rootCount * sizeof(double));
+    //
+    const auto topRoots = allRoots.const_slice(- len + 1, 0);
+
+    for (int i = 0; i < rootCount; i++) {
+        double res = solveForX(polynomial, len, (*topRoots)[i]);
+        std::cout << (*topRoots)[i] << ": " << res << "\n";
+    }
+    //
+    memcpy(roots, allRoots.array() + (allRoots.len() - len + 1), rootCount * sizeof(double));
 
     return rootCount;
 }
+
+int findRoots(Array<double>& polynomial, int len, double* roots, unsigned bitPrecision) {
+    //auto polynomialRow = Array<double>((len + 1) * len / 2 - 1);
+    //preProcess(polynomial, len, polynomialRow.array());
+    auto polynomialRow = preProcess(polynomial);
+
+    auto allRoots = Array<double>((len - 1) * len / 2);
+    auto rootCounts = Array<int>(len - 1);
+
+    // findRootsIterate_(allRoots.array(), rootCounts.array(), polynomialRow.array(), len, bitPrecision);
+    findRootsIterate_(allRoots, rootCounts, *polynomialRow, len, bitPrecision);
+
+    int rootCount = rootCounts[rootCounts.len() - 1];
+    //
+    const auto topRoots = allRoots.const_slice(- len + 1, 0);
+
+    for (int i = 0; i < rootCount; i++) {
+        double res = solveForX(polynomial.array(), len, (*topRoots)[i]);
+        std::cout << (*topRoots)[i] << ": " << res << "\n";
+    }
+    //
+    memcpy(roots, allRoots.array() + (allRoots.len() - len + 1), rootCount * sizeof(double));
+
+    return rootCount;
+}
+
 
 Array<double>* preProcess(Array<double>& polynomial) {
     for (int i = polynomial.len() - 1; IS_ZERO(polynomial[i]); i--) {
@@ -31,7 +65,7 @@ Array<double>* preProcess(Array<double>& polynomial) {
     }
     double* differentiated;
     int currLen = polynomial.len();
-    auto* polynomialRow = new Array<double>(currLen*(currLen+1)/2 - 1);
+    auto* polynomialRow = new Array<double>(currLen * (currLen + 1) / 2 - 1);
     differentiated = polynomialRow->array() + polynomialRow->len() - currLen;
     memcpy(differentiated, polynomial.array(), polynomial.len() * sizeof(double));  // TODO method of Array
     for (int i = 0; i < polynomial.len() - 1; i++) {

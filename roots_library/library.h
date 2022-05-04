@@ -24,6 +24,8 @@ Array<double>* preProcess(Array<double>&);
 
 void preProcess(const double*, int, double*);
 
+int findRoots(Array<double>&, int, double*, unsigned);
+
 int findRoots(const double*, int, double*, unsigned);
 
 void findRootsIterate_(Array<double>&, Array<int>&, const Array<double>&, int, unsigned);
