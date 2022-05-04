@@ -15,7 +15,8 @@ int findRoots(const double* polynomial, int len, double* roots, unsigned bitPrec
     auto allRoots = Array<double>((len - 1) * len / 2);
     auto rootCounts = Array<int>(len - 1);
 
-    findRootsIterate_(allRoots.array(), rootCounts.array(), polynomialRow.array(), len, bitPrecision);
+    // findRootsIterate_(allRoots.array(), rootCounts.array(), polynomialRow.array(), len, bitPrecision);
+    findRootsIterate_(allRoots, rootCounts, polynomialRow, len, bitPrecision);
 
     int rootCount = rootCounts[rootCounts.len() - 1];
     memcpy(roots, allRoots.array() + allRoots.len() - len + 1, rootCount * sizeof(double));
