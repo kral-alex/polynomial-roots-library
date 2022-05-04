@@ -13,12 +13,12 @@
 #error "Requires IEEE 754 floating point!"
 #endif
 
-#define EPSILON (__DBL_MIN__ * 64)
-#define EQ_ZERO(x) ((x) < EPSILON && (x) > -(EPSILON))
+#define EPSILON (__DBL_MIN__ * 2)
+#define EQ_ZERO(x) (abs((x)) < EPSILON)
 #define IS_ZERO(x) ((x) == 0. || (x) == -0.)
 
 
-Array<double>* preProcess(const double*, int);
+Array<double>* preProcess(const double*, int&);
 
 Array<double>* preProcess(Array<double>&);
 

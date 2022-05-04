@@ -7,9 +7,10 @@
 #include "library.h"
 
 
-int findRoots(const double* polynomial, const int len, double* roots, unsigned bitPrecision) {
-    auto polynomialRow = Array<double>((len + 1) * len / 2 - 1);
-    preProcess(polynomial, len, polynomialRow.array());
+int findRoots(const double* polynomial, int len, double* roots, unsigned bitPrecision) {
+    //auto polynomialRow = Array<double>((len + 1) * len / 2 - 1);
+    //preProcess(polynomial, len, polynomialRow.array());
+    auto polynomialRow = *preProcess(polynomial, len);
 
     auto allRoots = Array<double>((len - 1) * len / 2);
     auto rootCounts = Array<int>(len - 1);
@@ -40,13 +41,17 @@ Array<double>* preProcess(Array<double>& polynomial) {
     return polynomialRow;
 }
 
-Array<double>* preProcess(const double* polynomial, const int n) {
-    int currLen = n;
+Array<double>* preProcess(const double* polynomial, int& n) {
+    for (int i = n - 1; IS_ZERO(polynomial[i]); i--) {
+        if (i == 0) return new Array<double>(0);
+        n--;
+    }
     double* differentiated;
     auto* polynomialRow = new Array<double>(n*(n+1)/2 - 1);
     differentiated = polynomialRow->array() + polynomialRow->len() - n;
-    memcpy(differentiated, polynomial, n * sizeof(double));
-    for (int i = 0; i < n - 1; i++) {
+    memcpy(differentiated, polynomial, n * sizeof(double));  // TODO method of Array
+    int currLen = n;
+    for (int i = 0; i < currLen - 1; i++) {
         differentiateWithDivisor(differentiated - currLen + 1, differentiated, currLen, i + 1);
         currLen--;
         differentiated -= currLen;
