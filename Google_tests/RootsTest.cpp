@@ -17,7 +17,7 @@ TEST(Rootsvalidity, RandomMakesZero) {
     auto polynomialRow = preProcess(input);
     auto dummyRoots = Array<double>((len - 1) * len / 2);
     auto dummyCounts = Array<int>(len - 1);
-    findRootsIterate(dummyRoots, dummyCounts, *polynomialRow, len, bit_precision);
+    findRootsIterate_(dummyRoots, dummyCounts, *polynomialRow, len, bit_precision);
 
     // printRoots(dummyRoots, dummyCounts);
     const auto topPolynomial = polynomialRow->const_slice(- len, 0);

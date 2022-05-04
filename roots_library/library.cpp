@@ -7,6 +7,19 @@
 #include "library.h"
 
 
+int findRoots(const double* polynomial, const int len, double* roots, unsigned bitPrecision) {
+    const auto* polynomialRow = preProcess(polynomial, len);
+    auto allRoots = Array<double>((len - 1) * len / 2);
+    auto rootCounts = Array<int>(len - 1);
+
+    findRootsIterate_(allRoots.array(), rootCounts.array(), polynomialRow->array(), len, bitPrecision);
+
+    auto rootCount = rootCounts[rootCounts.len() - 1];
+    memcpy(allRoots.array(), roots, rootCount * sizeof(double));
+
+    return rootCount;
+}
+
 Array<double>* preProcess(Array<double>& polynomial) {
     for (int i = polynomial.len() - 1; IS_ZERO(polynomial[i]); i--) {
         if (i == 0) return new Array<double>(0);
@@ -51,7 +64,7 @@ void findRootsIterate(Array<double>& allRoots, Array<int>& rootCounts, const Arr
     headInRow = 2;
     headInRoots = 1;
     for (int currLen = 3; currLen <= originalPolyLen; currLen++) {
-        rootCounts[currLen - 2] = findRoots(
+        rootCounts[currLen - 2] = searchBetweenPeaks_(
                 allRoots.array() + headInRoots,
                 *(rootCounts.array() + currLen - 3) ? allRoots.array() + headInRoots - (currLen - 2) : &zero,
                 *(rootCounts.array() + currLen - 3) ? *(rootCounts.array() + currLen - 3) : 1,
@@ -63,7 +76,31 @@ void findRootsIterate(Array<double>& allRoots, Array<int>& rootCounts, const Arr
     }
 }
 
-int findRoots(double* newRoots, const double* oldRoots, const int oldRootCount, const double* polynomial, const int polyLen, const unsigned long precision) {
+void findRootsIterate_(double* allRoots, int* rootCounts, const double* polynomialRow, const int originalPolyLen, const unsigned precision) {
+    const double zero = 0.;
+    if (EQ_ZERO(polynomialRow[0])) {
+        allRoots[0] = 0.;
+    } else {
+        formula_linear_(allRoots, polynomialRow);
+    }
+    rootCounts[0] = 1;
+
+    for (int currLen = 3; currLen <= originalPolyLen; currLen++) {
+        allRoots += currLen - 2;
+        polynomialRow += currLen - 1;
+        rootCounts++;
+
+        *rootCounts = searchBetweenPeaks_(
+                allRoots,
+                *(rootCounts - 1) ? allRoots - (currLen - 2) : &zero,  // if no previous roots an address of 0. given
+                *(rootCounts - 1) ? *(rootCounts - 1) : 1,  // if no previous roots count of 1 given
+                polynomialRow,
+                currLen,
+                precision);
+    }
+}
+
+int searchBetweenPeaks_(double* newRoots, const double* oldRoots, const int oldRootCount, const double* polynomial, const int polyLen, const unsigned precision) {
     double currValue, nextValue;
     bool currSign, nextSign;
     int newRootCount = 0;
@@ -122,7 +159,7 @@ int findRoots(double* newRoots, const double* oldRoots, const int oldRootCount, 
     return newRootCount;
 }
 
-double approximateRoot(const double* polynomial, const int polyLen, double lowLimit, double highLimit, const unsigned long precision) {
+double approximateRoot(const double* polynomial, const int polyLen, double lowLimit, double highLimit, const unsigned precision) {
 
     //while (equalsPrecise(lowLimit, highLimit, precision)) {
     // subtraction too imprecise
