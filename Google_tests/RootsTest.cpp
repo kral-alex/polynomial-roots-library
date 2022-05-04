@@ -17,7 +17,10 @@ TEST(RootsValidity, RandomMakesZero) {
     srandom(time(nullptr));
 
     for (int i = 0; i < len; i++) input[i] = (double)(random() & 0b1111111111111) * ((random() & 1) ? 1: -1);
-    auto polynomialRow = std::unique_ptr<Array<double>>(preProcess(input));
+    //TODO see if two below are same (ideally in another test)
+    //auto polynomialRow = std::unique_ptr<Array<double>>(preProcess(input));
+    auto polynomialRow = std::unique_ptr<Array<double>>(preProcess(input.array(), len));
+
     //auto polynomialRow = *preProcess(input);
     auto dummyRoots = Array<double>((len - 1) * len / 2);
     auto dummyCounts = Array<int>(len - 1);
@@ -53,7 +56,7 @@ TEST(RootsValidity, RandomRootCheck) {
     for (int i = 0; i < len; i++) input[i] = (double)(random() & 0b1111111111111) * ((random() & 1) ? 1: -1);
 
     //int rootCount = findRoots(input.array(), len, output.array(), bit_precision);
-    int rootCount = findRoots(input, len, output.array(), bit_precision);
+    int rootCount = findRoots(input.array(), len, output.array(), bit_precision);
 
     ASSERT_NE(len % 2, rootCount % 2);
 

@@ -19,14 +19,6 @@ int findRoots(const double* polynomial, int len, double* roots, unsigned bitPrec
     findRootsIterate_(allRoots, rootCounts, *polynomialRow, len, bitPrecision);
 
     int rootCount = rootCounts[rootCounts.len() - 1];
-    //
-    const auto topRoots = allRoots.const_slice(- len + 1, 0);
-
-    for (int i = 0; i < rootCount; i++) {
-        double res = solveForX(polynomial, len, (*topRoots)[i]);
-        std::cout << (*topRoots)[i] << ": " << res << "\n";
-    }
-    //
     memcpy(roots, allRoots.array() + (allRoots.len() - len + 1), rootCount * sizeof(double));
 
     return rootCount;
@@ -44,14 +36,6 @@ int findRoots(Array<double>& polynomial, int len, double* roots, unsigned bitPre
     findRootsIterate_(allRoots, rootCounts, *polynomialRow, len, bitPrecision);
 
     int rootCount = rootCounts[rootCounts.len() - 1];
-    //
-    const auto topRoots = allRoots.const_slice(- len + 1, 0);
-
-    for (int i = 0; i < rootCount; i++) {
-        double res = solveForX(polynomial.array(), len, (*topRoots)[i]);
-        std::cout << (*topRoots)[i] << ": " << res << "\n";
-    }
-    //
     memcpy(roots, allRoots.array() + (allRoots.len() - len + 1), rootCount * sizeof(double));
 
     return rootCount;
