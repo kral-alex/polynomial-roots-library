@@ -67,7 +67,7 @@ inline bool equalsPrecise(double a, double b, unsigned long sig_dig_precision) {
 }
 
 template<class T>
-void printRoots(const Array<T>& roots, const Array<int>& counts) {
+std::ostream& printRoots(std::ostream& os, const Array<T>& roots, const Array<int>& counts) {
     std::cout << "printing roots:\n";
     int currPos = 0;
     for (int i = 0; i < counts.len(); i++) {
@@ -78,6 +78,15 @@ void printRoots(const Array<T>& roots, const Array<int>& counts) {
         }
         currPos += i + 1;
     }
+    return os;
+}
+
+inline void printPolynomial(std::ostream& os, const double* polynomial, int len) {
+    os << "polynomial: \n";
+    for (int i = 0; i < len; i++) {
+        std::cout << "(" << polynomial[i] << ")*(x^" << i << ") + ";
+    }
+    os << "0 \n";
 }
 
 

@@ -2,6 +2,7 @@
 // Created by Alex Král on 05.04.2022.
 //
 #include <iostream>
+#include <vector>
 #include <cmath>
 
 #include "library.h"
@@ -10,7 +11,7 @@
 int findRoots(const double* polynomial, int len, double* roots, unsigned bitPrecision) {
     //auto polynomialRow = Array<double>((len + 1) * len / 2 - 1);
     //preProcess(polynomial, len, polynomialRow.array());
-    auto polynomialRow = preProcess(polynomial, len);
+    auto polynomialRow = std::unique_ptr<Array<double>>(preProcess(polynomial, len));
 
     auto allRoots = Array<double>((len - 1) * len / 2);
     auto rootCounts = Array<int>(len - 1);
@@ -39,6 +40,22 @@ int findRoots(Array<double>& polynomial, int len, double* roots, unsigned bitPre
     memcpy(roots, allRoots.array() + (allRoots.len() - len + 1), rootCount * sizeof(double));
 
     return rootCount;
+}
+
+size_t normalizePolynomial(const double* polynomial, size_t len) {
+    for (unsigned i = len - 1; i <= 0; i--) {
+        if (IS_ZERO(polynomial[i])) len--;
+    }
+    return len;
+}
+
+size_t normalizePolynomial(std::vector<double>& polynomial) {
+    for (unsigned i = polynomial.size(); i <= 0; i--) {
+        if (IS_ZERO(polynomial[i])) {
+            polynomial.erase(polynomial.end());
+        }
+    }
+    return polynomial.size();
 }
 
 

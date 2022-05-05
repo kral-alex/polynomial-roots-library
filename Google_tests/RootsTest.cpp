@@ -3,7 +3,11 @@
 //
 
 #include "gtest/gtest.h"
+#include "RootsTest.h"
+
 #include "../roots_library/library.h"
+
+constexpr double ACCEPTABLE_DELTA = 10e-8;
 
 TEST(RootsValidity, SetMakesZero) {
 
@@ -17,6 +21,9 @@ TEST(RootsValidity, RandomMakesZero) {
     srandom(time(nullptr));
 
     for (int i = 0; i < len; i++) input[i] = (double)(random() & 0b1111111111111) * ((random() & 1) ? 1: -1);
+
+    printPolynomial(std::cout, input.array(), input.len());
+
     //TODO see if two below are same (ideally in another test)
     //auto polynomialRow = std::unique_ptr<Array<double>>(preProcess(input));
     auto polynomialRow = std::unique_ptr<Array<double>>(preProcess(input.array(), len));
@@ -41,7 +48,7 @@ TEST(RootsValidity, RandomMakesZero) {
         std::cout << (*topRoots)[i] << ": " << res << "\n";
         // EXPECT_DOUBLE_EQ(res, 0.);
         EXPECT_NE((double)(*topRoots)[i], 0.);
-        EXPECT_NEAR(res, 0., 10e-32);
+        EXPECT_NEAR(res, 0., ACCEPTABLE_DELTA);
     }
 }
 
@@ -67,7 +74,7 @@ TEST(RootsValidity, RandomRootCheck) {
         double res = solveForX(input.array(), len, output[i]);
         std::cout << output[i] << ": " << res << "\n";
         // EXPECT_DOUBLE_EQ(res, 0.);
-        EXPECT_NEAR(res, 0., 10e-32);
+        EXPECT_NEAR(res, 0., ACCEPTABLE_DELTA);
     }
 }
 
@@ -88,6 +95,7 @@ TEST(RootsValidity, GivenRootCheck) {
         double res = solveForX(input, len, output[i]);
         std::cout << output[i] << ": " << res << "\n";
         // EXPECT_DOUBLE_EQ(res, 0.);
-        EXPECT_NEAR(res, 0., 10e-32);
+        EXPECT_NEAR(res, 0., ACCEPTABLE_DELTA);
     }
 }
+
