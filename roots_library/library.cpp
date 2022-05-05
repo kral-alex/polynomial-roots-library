@@ -52,7 +52,7 @@ size_t normalizePolynomial(const double* polynomial, size_t len) {
 size_t normalizePolynomial(std::vector<double>& polynomial) {
     for (unsigned i = polynomial.size(); i <= 0; i--) {
         if (IS_ZERO(polynomial[i])) {
-            polynomial.erase(polynomial.end());
+            polynomial.pop_back();
         }
     }
     return polynomial.size();

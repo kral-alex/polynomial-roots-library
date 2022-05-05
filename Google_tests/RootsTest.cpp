@@ -1,3 +1,5 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "cert-err58-cpp"
 //
 // Created by Alex Král on 02.05.2022.
 //
@@ -9,9 +11,25 @@
 
 constexpr double ACCEPTABLE_DELTA = 10e-8;
 
-TEST(RootsValidity, SetMakesZero) {
+std::unique_ptr<std::vector<double>> randomPolyGenerator(int size, unsigned seed=time(nullptr)) {
+    srandom(seed);
 
+    auto polynomial = std::make_unique<std::vector<double>>(size);
+    std::for_each(polynomial->begin(), polynomial->end(),[](double& e) {
+        e = (double)(random() & 0b1111111111111) * ((random() & 1) ? 1: -1);
+    });
+    return polynomial;
 }
+
+TEST_P(RootsTest, CloseToZero) {
+    for (double root : roots) {
+        double res = solveForX(polynomial.data(), (int)polynomial.size(), root);
+        std::cout << root << ": " << res << "\n";
+        // EXPECT_DOUBLE_EQ(res, 0.);
+        EXPECT_NEAR(res, 0., ACCEPTABLE_DELTA);
+    }
+}
+
 
 TEST(RootsValidity, RandomMakesZero) {
     int len = 50;
@@ -99,3 +117,12 @@ TEST(RootsValidity, GivenRootCheck) {
     }
 }
 
+auto sizes = std::vector<int>{3, 10, 50, 100};
+auto seed_time = time(nullptr);
+
+INSTANTIATE_TEST_SUITE_P(RootsValidation, RootsTest,
+        testing::Values(std::tuple<std::tuple<std::vector<double>, int>>(std::for_each(sizes.begin(), sizes.end(), [](int n) { return randomPolyGenerator(n, seed_time); } ), )
+        );
+
+
+#pragma clang diagnostic pop
