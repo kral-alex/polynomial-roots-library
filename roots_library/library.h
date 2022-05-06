@@ -50,7 +50,7 @@ inline void formula_linear_(double* root, double const* poly) {
  *  when the difference overflows further into the mantissa
  *  when the (even one bit) difference overflows into a one bit difference in the exponent
  */
-inline bool equalsPrecise(double a, double b, unsigned long sig_dig_precision) {
+inline bool equalsPrecise(double a, double b, unsigned sig_dig_precision) {
     if (!(*reinterpret_cast<u_int64_t *>(&a) & (0b0111111111111111111111111111111111111111111111111111111111111110) ||
           *reinterpret_cast<u_int64_t *>(&b) & (0b0111111111111111111111111111111111111111111111111111111111111110))) { // 0b0111111111111111111111111111111111111111111111111111111111111110 == (ULONG_LONG_MAX >> 1) - 1
         return true;

@@ -18,6 +18,9 @@ protected:
     int bit_precision = std::get<1>(GetParam());
 
     void SetUp() override {
+        std::cout << std::defaultfloat << std::setprecision(8);
+        printPolynomial(std::cout, polynomial.data(), (int)polynomial.size());
+        std::cout << std::scientific;
         auto temp_roots = static_cast<double*>(malloc((polynomial.size() - 1) * sizeof(double)));
         int rootCount = findRoots(polynomial.data(), (int)polynomial.size(), temp_roots, bit_precision);
         roots = std::vector<double>(temp_roots, temp_roots + rootCount);

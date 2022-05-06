@@ -118,11 +118,29 @@ TEST(RootsValidity, GivenRootCheck) {
 }
 
 auto sizes = std::vector<int>{3, 10, 50, 100};
+auto settings = std::vector<std::vector<double>>(sizes.size());
 auto seed_time = time(nullptr);
+/*
+INSTANTIATE_TEST_SUITE_P(RootsValidation, RootsTest, testing::Combine(
+                         testing::Values( std::invoke([] {
+                             for (int i = 0; i < sizes.size(); i++) {
+                                 settings[i] = std::vector<double>(*randomPolyGenerator(sizes[i], seed_time));
+                             }
+                             return settings;
+                         }) ),
+                         testing::Values(2)
+                         ));
+*/
 
-INSTANTIATE_TEST_SUITE_P(RootsValidation, RootsTest,
-        testing::Values(std::tuple<std::tuple<std::vector<double>, int>>(std::for_each(sizes.begin(), sizes.end(), [](int n) { return randomPolyGenerator(n, seed_time); } ), )
-        );
+INSTANTIATE_TEST_SUITE_P(RootsValidation, RootsTest, testing::Combine(
+                         testing::Values(
+                                 *randomPolyGenerator(sizes[0], seed_time),
+                                 *randomPolyGenerator(sizes[1], seed_time),
+                                 *randomPolyGenerator(sizes[2], seed_time),
+                                 *randomPolyGenerator(sizes[3], seed_time)
+                                 ),
+                         testing::Values(0)
+                         ));
 
 
 #pragma clang diagnostic pop
