@@ -1,6 +1,0 @@
-#ifndef ROOTSLIB_TEST_LIBRARY__H
-#define ROOTSLIB_TEST_LIBRARY__H
-
-void hello();
-
-#endif //ROOTSLIB_TEST_LIBRARY__H

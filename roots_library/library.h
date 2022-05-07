@@ -6,6 +6,7 @@
 #define ROOTS___CORE_H
 
 #include <cmath>
+#include "boost/math/tools/roots.hpp"
 
 #include "Array.h"
 
@@ -22,11 +23,17 @@ Array<double>* preProcess(const double*, int&);
 
 Array<double>* preProcess(Array<double>&);
 
+size_t normalizePolynomial(const double* polynomial, size_t len);
+
+size_t normalizePolynomial(std::vector<double>& polynomial);
+
 void preProcess(const double*, int, double*);
 
-int findRoots(Array<double>&, int, double*, unsigned);
+std::vector<double>* findRoots(const std::vector<double>& polynomial, std::vector<double>* roots);
 
-int findRoots(const double*, int, double*, unsigned);
+int findRoots(Array<double>&, int, double*);
+
+int findRoots(const double*, int, double*);
 
 void findRootsIterate_(Array<double>&, Array<int>&, const Array<double>&, int, unsigned);
 
@@ -84,7 +91,7 @@ std::ostream& printRoots(std::ostream& os, const Array<T>& roots, const Array<in
 inline void printPolynomial(std::ostream& os, const double* polynomial, int len) {
     os << "polynomial: \n";
     for (int i = 0; i < len; i++) {
-        std::cout << "(" << polynomial[i] << ")*(x^" << i << ") + ";
+        std::cout << "(" << polynomial[i] << ")*(x^" << i << ")+";
     }
     os << "0 \n";
 }

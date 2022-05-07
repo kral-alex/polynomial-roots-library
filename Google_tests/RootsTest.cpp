@@ -9,138 +9,67 @@
 
 #include "../roots_library/library.h"
 
-constexpr double ACCEPTABLE_DELTA = 10e-8;
+namespace tests {
 
-std::unique_ptr<std::vector<double>> randomPolyGenerator(int size, unsigned seed=time(nullptr)) {
-    srandom(seed);
+    constexpr double ACCEPTABLE_DELTA = 10e-8;
 
-    auto polynomial = std::make_unique<std::vector<double>>(size);
-    std::for_each(polynomial->begin(), polynomial->end(),[](double& e) {
-        e = (double)(random() & 0b1111111111111) * ((random() & 1) ? 1: -1);
-    });
-    return polynomial;
-}
+    union dbl_bits {
+        double fl;
+        u_int64_t bits;
+    };
 
-TEST_P(RootsTest, CloseToZero) {
-    for (double root : roots) {
-        double res = solveForX(polynomial.data(), (int)polynomial.size(), root);
-        std::cout << root << ": " << res << "\n";
-        // EXPECT_DOUBLE_EQ(res, 0.);
-        EXPECT_NEAR(res, 0., ACCEPTABLE_DELTA);
+    TEST_P(RootsTest, BitDifference) {
+        for (double root: roots) {
+            dbl_bits root_bits {.fl = root};
+            dbl_bits less {.bits =  root_bits.bits - (u_int64_t)(bit_precision + 1)};
+            dbl_bits more {.bits =  root_bits.bits + (u_int64_t)(bit_precision + 1)};
+            //std::cout << root_bits.fl << " : " << root_bits.bits << "\n";
+            //std::cout << less.bits << " : " << more.bits << "\n";
+            //std::cout << less.fl << " : " << more.fl << "\n";
+            double on_root = solveForX(polynomial.data(), (int) polynomial.size(), root);
+            double less_res = solveForX(polynomial.data(), (int) polynomial.size(), less.fl);
+            double more_res = solveForX(polynomial.data(), (int) polynomial.size(), more.fl);
+
+            std::cout << less_res << " | " << on_root << " | " << more_res << "\n";
+            EXPECT_LE(abs(on_root), abs(less_res));
+            EXPECT_LE(abs(on_root), abs(more_res));
+        }
     }
-}
 
+    TEST_P(RootsTest, CloseToZero) {
+        std::cout << std::defaultfloat << std::setprecision(8);
+        printPolynomial(std::cout, polynomial.data(), (int)polynomial.size());
+        std::cout << std::scientific;
 
-TEST(RootsValidity, RandomMakesZero) {
-    int len = 50;
-    const unsigned bit_precision = 3;
-    auto input = Array<double>(len);
-
-    srandom(time(nullptr));
-
-    for (int i = 0; i < len; i++) input[i] = (double)(random() & 0b1111111111111) * ((random() & 1) ? 1: -1);
-
-    printPolynomial(std::cout, input.array(), input.len());
-
-    //TODO see if two below are same (ideally in another test)
-    //auto polynomialRow = std::unique_ptr<Array<double>>(preProcess(input));
-    auto polynomialRow = std::unique_ptr<Array<double>>(preProcess(input.array(), len));
-
-    //auto polynomialRow = *preProcess(input);
-    auto dummyRoots = Array<double>((len - 1) * len / 2);
-    auto dummyCounts = Array<int>(len - 1);
-    findRootsIterate_(dummyRoots, dummyCounts, *polynomialRow, len, bit_precision);
-
-    // printRoots(dummyRoots, dummyCounts);
-    const auto topPolynomial = polynomialRow->const_slice(- len, 0);
-    const auto topRoots = dummyRoots.const_slice(- len + 1, 0);
-    const int topCount = dummyCounts[len - 2];
-
-    ASSERT_NE(len % 2, topCount % 2);
-
-    std::cout << std::scientific << std::setprecision(17);
-    std::cout << "#roots: "<< topCount << "\n";
-
-    for (int i = 0; i < topCount; i++) {
-        double res = solveForX(topPolynomial->array(), len, (double)(*topRoots)[i]);
-        std::cout << (*topRoots)[i] << ": " << res << "\n";
-        // EXPECT_DOUBLE_EQ(res, 0.);
-        EXPECT_NE((double)(*topRoots)[i], 0.);
-        EXPECT_NEAR(res, 0., ACCEPTABLE_DELTA);
+        std::cout << "#roots: " << roots.size() << "\n";
+        for (double root: roots) {
+            double res = solveForX(polynomial.data(), (int) polynomial.size(), root);
+            std::cout << "\t" << root << ": " << res << "\n";
+            // EXPECT_DOUBLE_EQ(res, 0.);
+            EXPECT_NEAR(res, 0., ACCEPTABLE_DELTA);
+        }
     }
-}
 
-TEST(RootsValidity, RandomRootCheck) {
-    const int len = 50;
-    const unsigned bit_precision = 3;
-    auto input = Array<double>(len);
-    auto output = Array<double>(len - 1);
-
-    srandom(time(nullptr));
-
-    for (int i = 0; i < len; i++) input[i] = (double)(random() & 0b1111111111111) * ((random() & 1) ? 1: -1);
-
-    //int rootCount = findRoots(input.array(), len, output.array(), bit_precision);
-    int rootCount = findRoots(input.array(), len, output.array(), bit_precision);
-
-    ASSERT_NE(len % 2, rootCount % 2);
-
-    std::cout << std::scientific << std::setprecision(17);
-    std::cout << "# roots: "<< rootCount << "\n";
-
-    for (int i = 0; i < rootCount; i++) {
-        double res = solveForX(input.array(), len, output[i]);
-        std::cout << output[i] << ": " << res << "\n";
-        // EXPECT_DOUBLE_EQ(res, 0.);
-        EXPECT_NEAR(res, 0., ACCEPTABLE_DELTA);
+    std::string nameGeneratorFromSize(const testing::TestParamInfo<RootsTest::ParamType> info) {
+        std::stringstream ss;
+        ss << "len_" << std::get<0>(info.param).size() << "_bp_" << std::get<1>(info.param) << "";
+        return ss.str();
     }
+
+    auto sizes = std::vector<int>{3, 10, 50, 100};
+    auto settings = std::vector<std::vector<double>>(sizes.size());
+    auto seed_time = time(nullptr);
+
+    auto valuesSuite = testing::Combine(
+            testing::Values(
+                    *randomPolyGenerator(sizes[0], seed_time * sizes.size()),
+                    *randomPolyGenerator(sizes[1], seed_time * sizes.size()),
+                    *randomPolyGenerator(sizes[2], seed_time * sizes.size()),
+                    *randomPolyGenerator(sizes[3], seed_time * sizes.size())
+            ),
+            testing::Values(0)
+    );
+
+    INSTANTIATE_TEST_SUITE_P(RootsValidation, RootsTest, valuesSuite, nameGeneratorFromSize);
 }
-
-TEST(RootsValidity, GivenRootCheck) {
-    const int len = 7;
-    const unsigned bit_precision = 3;
-    const double input[] = {1, 2, 3, 4, 5, 1000, 0.01};
-    auto output = Array<double>(len - 1);
-
-    int rootCount = findRoots(input, len, output.array(), bit_precision);
-
-    ASSERT_NE(len % 2, rootCount % 2);
-
-    std::cout << std::scientific << std::setprecision(17);
-    std::cout << "#roots: "<< rootCount << "\n";
-
-    for (int i = 0; i < rootCount; i++) {
-        double res = solveForX(input, len, output[i]);
-        std::cout << output[i] << ": " << res << "\n";
-        // EXPECT_DOUBLE_EQ(res, 0.);
-        EXPECT_NEAR(res, 0., ACCEPTABLE_DELTA);
-    }
-}
-
-auto sizes = std::vector<int>{3, 10, 50, 100};
-auto settings = std::vector<std::vector<double>>(sizes.size());
-auto seed_time = time(nullptr);
-/*
-INSTANTIATE_TEST_SUITE_P(RootsValidation, RootsTest, testing::Combine(
-                         testing::Values( std::invoke([] {
-                             for (int i = 0; i < sizes.size(); i++) {
-                                 settings[i] = std::vector<double>(*randomPolyGenerator(sizes[i], seed_time));
-                             }
-                             return settings;
-                         }) ),
-                         testing::Values(2)
-                         ));
-*/
-
-INSTANTIATE_TEST_SUITE_P(RootsValidation, RootsTest, testing::Combine(
-                         testing::Values(
-                                 *randomPolyGenerator(sizes[0], seed_time),
-                                 *randomPolyGenerator(sizes[1], seed_time),
-                                 *randomPolyGenerator(sizes[2], seed_time),
-                                 *randomPolyGenerator(sizes[3], seed_time)
-                                 ),
-                         testing::Values(0)
-                         ));
-
-
 #pragma clang diagnostic pop
