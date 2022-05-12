@@ -11,7 +11,7 @@
 
 namespace tests {
 
-    constexpr double ACCEPTABLE_DELTA = 10e-8;
+    constexpr double ACCEPTABLE_DELTA = 10e-10;
 
     union dbl_bits {
         double fl;
@@ -54,7 +54,7 @@ namespace tests {
             double res = solveForX(polynomial.data(), (int) polynomial.size(), root);
             std::cout << "\t" << root << ": " << res << "\n";
             // EXPECT_DOUBLE_EQ(res, 0.);
-            EXPECT_NEAR(res, 0., ACCEPTABLE_DELTA);
+            EXPECT_NEAR(res, 0., ACCEPTABLE_DELTA * pow(polynomial.size(), 5));
         }
     }
 
@@ -70,10 +70,10 @@ namespace tests {
 
     auto valuesSuite = testing::Combine(
             testing::Values(
-                    *randomPolyGenerator(sizes[0], seed_time * sizes.size()),
                     *randomPolyGenerator(sizes[1], seed_time * sizes.size()),
                     *randomPolyGenerator(sizes[2], seed_time * sizes.size()),
-                    *randomPolyGenerator(sizes[3], seed_time * sizes.size())
+                    *randomPolyGenerator(sizes[3], seed_time * sizes.size()),
+                    std::vector<double>{1, -1, 1}
             ),
             testing::Values(0)
     );
