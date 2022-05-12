@@ -31,8 +31,16 @@ namespace tests {
             double more_res = solveForX(polynomial.data(), (int) polynomial.size(), more.fl);
 
             std::cout << less_res << " | " << on_root << " | " << more_res << "\n";
-            EXPECT_LE(abs(on_root), abs(less_res));
-            EXPECT_LE(abs(on_root), abs(more_res));
+
+            if (signbit(on_root) == signbit(less_res)) {
+                EXPECT_LE(abs(on_root), abs(less_res));
+            }
+            if (signbit(on_root) == signbit(more_res)) {
+                EXPECT_LE(abs(on_root), abs(more_res));
+            } else {
+                EXPECT_LE(abs(on_root), abs(less_res));
+                EXPECT_LE(abs(on_root), abs(less_res));
+            }
         }
     }
 
