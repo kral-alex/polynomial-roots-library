@@ -14,7 +14,7 @@
 #error "Requires IEEE 754 floating point!"
 #endif
 
-#define EPSILON (__DBL_MIN__ * 2)
+#define EPSILON (__DBL_MIN__ * 12)
 #define EQ_ZERO(x) (abs((x)) < EPSILON)
 #define IS_ZERO(x) ((x) == 0. || (x) == -0.)
 
