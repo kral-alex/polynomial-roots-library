@@ -15,9 +15,13 @@ template<class T>
 class Array{
     T* array_;
     unsigned len_;
-    bool owner_ = true;
 
     Array(): len_(0) {}
+
+    Array(const Array& a): len_(a.len_) {
+        array_ = static_cast<T*>(malloc(len_ * sizeof(T)));
+        memcpy(array_, a.array_, sizeof(T) * len_);
+    }
 
     class Proxy {
         friend Array;
@@ -37,38 +41,10 @@ public:
         if (array_ == NULL) throw std::runtime_error("malloc failed");
     }
 
-    Array(const Array& a): len_(a.len_) {
-        array_ = static_cast<T*>(malloc(len_ * sizeof(T)));
-        memcpy(array_, a.array_, sizeof(T) * len_);
-    }
-
     Array& operator= (const Array& a) =delete;
 
-    void shorten(int n) {
-        len_ -= n;
-    }
-
-    Array& slice(int start, int end) const {
-        if (start < 0) start = len_ - start;
-        if (end < 0) end = len_ - end;
-        Array a = Array(this);
-        a.array_ += start;
-        a.len_ -= start + end;
-        return *a;
-    }
-
-    const Array* const_slice(int start, int end) {
-        if (start < 0) start = len_ - start;
-        if (end < 0) end = len_ - end;
-        auto a = new Array();
-        a->owner_ = false;
-        a->array_ = array_ + start;
-        a->len_ = len_ - (start + end);
-        return a;
-    }
-
     ~Array() {
-        if (owner_ && array_ != NULL)
+        if (array_ != NULL)
             free(array_);
     }
 
@@ -86,9 +62,11 @@ public:
     [[nodiscard]] int len() const {return len_;}  // non-discard prevents function call with return value discarded
 
     friend std::ostream& operator<< (std::ostream& os, const Array& array) {
-        for (int i = 0; i < array.len_; i++) {
-            os << i << ": " << array.array_[i] << '\n';
+        os << "{";
+        for (int i = 0; i < array.len_ - 1; i++) {
+            os << array.array_[i] << ",";
         }
+        os << array.array_[array.len_ - 1] << "}\n";
         return os;
     }
 

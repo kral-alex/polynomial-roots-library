@@ -6,6 +6,7 @@
 #define ROOTS___CORE_H
 
 #include <cmath>
+#include "boost/math/tools/roots.hpp"
 
 #include "Array.h"
 
@@ -13,23 +14,34 @@
 #error "Requires IEEE 754 floating point!"
 #endif
 
-#define EPSILON (__DBL_MIN__ * 64)
-#define EQ_ZERO(x) ((x) < EPSILON && (x) > -(EPSILON))
+#define EPSILON (__DBL_MIN__ * 12)
+#define EQ_ZERO(x) (abs((x)) < EPSILON)
 #define IS_ZERO(x) ((x) == 0. || (x) == -0.)
 
 
-Array<double>* preProcess(const double*, int);
+Array<double>* preProcess(const double*, int&);
+
 Array<double>* preProcess(Array<double>&);
 
-int findRoots(const double*, int, double*, unsigned);
+size_t normalizePolynomial(const double* polynomial, size_t len);
 
-void findRootsIterate_(Array<double>&, Array<int>&, const Array<double>&, int, unsigned long);
+size_t normalizePolynomial(std::vector<double>& polynomial);
 
-void findRootsIterate_(double*, int*, const double*, int, unsigned long);
+void preProcess(const double*, int, double*);
 
-int searchBetweenPeaks_(double*, const double*, int, const double*, int, unsigned long);
+std::vector<double>* findRoots(const std::vector<double>& polynomial, std::vector<double>* roots);
 
-double approximateRoot(const double*, int, double, double, unsigned long);
+int findRoots(Array<double>&, int, double*);
+
+int findRoots(const double*, int, double*);
+
+void findRootsIterate_(Array<double>&, Array<int>&, const Array<double>&, int, unsigned);
+
+void findRootsIterate_(double*, int*, const double*, int, unsigned);
+
+int searchBetweenPeaks_(double*, const double*, int, const double*, int, unsigned);
+
+double approximateRoot(const double*, int, double, double, unsigned);
 
 void differentiateWithDivisor(double*, double const*, int, int);
 
@@ -45,7 +57,7 @@ inline void formula_linear_(double* root, double const* poly) {
  *  when the difference overflows further into the mantissa
  *  when the (even one bit) difference overflows into a one bit difference in the exponent
  */
-inline bool equalsPrecise(double a, double b, unsigned long sig_dig_precision) {
+inline bool equalsPrecise(double a, double b, unsigned sig_dig_precision) {
     if (!(*reinterpret_cast<u_int64_t *>(&a) & (0b0111111111111111111111111111111111111111111111111111111111111110) ||
           *reinterpret_cast<u_int64_t *>(&b) & (0b0111111111111111111111111111111111111111111111111111111111111110))) { // 0b0111111111111111111111111111111111111111111111111111111111111110 == (ULONG_LONG_MAX >> 1) - 1
         return true;
@@ -62,7 +74,7 @@ inline bool equalsPrecise(double a, double b, unsigned long sig_dig_precision) {
 }
 
 template<class T>
-void printRoots(const Array<T>& roots, const Array<int>& counts) {
+std::ostream& printRoots(std::ostream& os, const Array<T>& roots, const Array<int>& counts) {
     std::cout << "printing roots:\n";
     int currPos = 0;
     for (int i = 0; i < counts.len(); i++) {
@@ -73,6 +85,15 @@ void printRoots(const Array<T>& roots, const Array<int>& counts) {
         }
         currPos += i + 1;
     }
+    return os;
+}
+
+inline void printPolynomial(std::ostream& os, const double* polynomial, int len) {
+    os << "polynomial: \n";
+    for (int i = 0; i < len; i++) {
+        std::cout << "(" << polynomial[i] << ")*(x^" << i << ")+";
+    }
+    os << "0 \n";
 }
 
 

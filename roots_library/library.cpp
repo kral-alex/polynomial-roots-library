@@ -2,32 +2,85 @@
 // Created by Alex Král on 05.04.2022.
 //
 #include <iostream>
+#include <vector>
 #include <cmath>
 
 #include "library.h"
 
 
-int findRoots(const double* polynomial, const int len, double* roots, unsigned bitPrecision) {
-    const auto* polynomialRow = preProcess(polynomial, len);
+int findRoots(const double* polynomial, int len, double* roots) {
+    //auto polynomialRow = Array<double>((len + 1) * len / 2 - 1);
+    //preProcess(polynomial, len, polynomialRow.array());
+    auto polynomialRow = std::unique_ptr<Array<double>>(preProcess(polynomial, len));
+
     auto allRoots = Array<double>((len - 1) * len / 2);
     auto rootCounts = Array<int>(len - 1);
 
-    findRootsIterate_(allRoots.array(), rootCounts.array(), polynomialRow->array(), len, bitPrecision);
+    // findRootsIterate_(allRoots.array(), rootCounts.array(), polynomialRow.array(), len, bitPrecision);
+    findRootsIterate_(allRoots, rootCounts, *polynomialRow, len, 0);
 
-    auto rootCount = rootCounts[rootCounts.len() - 1];
-    memcpy(allRoots.array(), roots, rootCount * sizeof(double));
+    int rootCount = rootCounts[rootCounts.len() - 1];
+    memcpy(roots, allRoots.array() + (allRoots.len() - len + 1), rootCount * sizeof(double));
 
     return rootCount;
 }
 
-Array<double>* preProcess(Array<double>& polynomial) {
-    for (int i = polynomial.len() - 1; IS_ZERO(polynomial[i]); i--) {
-        if (i == 0) return new Array<double>(0);
-        polynomial.shorten(1);
+int findRoots(Array<double>& polynomial, int len, double* roots) {
+    //auto polynomialRow = Array<double>((len + 1) * len / 2 - 1);
+    //preProcess(polynomial, len, polynomialRow.array());
+    auto polynomialRow = preProcess(polynomial);
+
+    auto allRoots = Array<double>((len - 1) * len / 2);
+    auto rootCounts = Array<int>(len - 1);
+
+    // findRootsIterate_(allRoots.array(), rootCounts.array(), polynomialRow.array(), len, bitPrecision);
+    findRootsIterate_(allRoots, rootCounts, *polynomialRow, len, 0);
+
+    int rootCount = rootCounts[rootCounts.len() - 1];
+    memcpy(roots, allRoots.array() + (allRoots.len() - len + 1), rootCount * sizeof(double));
+
+    return rootCount;
+}
+
+std::vector<double>* findRoots(const std::vector<double>& polynomial, std::vector<double>* roots = new std::vector<double>(0)) {
+    int len = (int)polynomial.size();
+    auto polynomialRow = static_cast<double*>(malloc(polynomial.size() * (polynomial.size() + 1) / 2));
+    preProcess(polynomial.data(), (int)polynomial.size(), polynomialRow);
+
+    auto allRoots = Array<double>((len - 1) * len / 2);
+    auto rootCounts = Array<int>(len - 1);
+
+    // findRootsIterate_(allRoots.array(), rootCounts.array(), polynomialRow.array(), len, bitPrecision);
+    findRootsIterate_(allRoots.array(), rootCounts.array(), polynomialRow, len, 0);
+
+    int rootCount = rootCounts[rootCounts.len() - 1];
+    roots->reserve(rootCount);
+    roots->assign(allRoots.array() + (allRoots.len() - len + 1), allRoots.array() + (allRoots.len() - len + 1) + rootCount);
+
+    return roots;
+}
+
+size_t normalizePolynomial(const double* polynomial, size_t len) {
+    for (unsigned i = len - 1; i <= 0; i--) {
+        if (IS_ZERO(polynomial[i])) len--;
     }
+    return len;
+}
+
+size_t normalizePolynomial(std::vector<double>& polynomial) {
+    for (unsigned i = polynomial.size(); i <= 0; i--) {
+        if (IS_ZERO(polynomial[i])) {
+            polynomial.pop_back();
+        }
+    }
+    return polynomial.size();
+}
+
+
+Array<double>* preProcess(Array<double>& polynomial) {
     double* differentiated;
     int currLen = polynomial.len();
-    auto* polynomialRow = new Array<double>(currLen*(currLen+1)/2 - 1);
+    auto* polynomialRow = new Array<double>(currLen * (currLen + 1) / 2 - 1);
     differentiated = polynomialRow->array() + polynomialRow->len() - currLen;
     memcpy(differentiated, polynomial.array(), polynomial.len() * sizeof(double));  // TODO method of Array
     for (int i = 0; i < polynomial.len() - 1; i++) {
@@ -38,13 +91,13 @@ Array<double>* preProcess(Array<double>& polynomial) {
     return polynomialRow;
 }
 
-Array<double>* preProcess(const double* polynomial, const int n) {
-    int currLen = n;
+Array<double>* preProcess(const double* polynomial, int& n) {
     double* differentiated;
     auto* polynomialRow = new Array<double>(n*(n+1)/2 - 1);
     differentiated = polynomialRow->array() + polynomialRow->len() - n;
-    memcpy(differentiated, polynomial, n * sizeof(double));
-    for (int i = 0; i < n - 1; i++) {
+    memcpy(differentiated, polynomial, n * sizeof(double));  // TODO method of Array
+    int currLen = n;
+    for (int i = 0; i < currLen - 1; i++) {
         differentiateWithDivisor(differentiated - currLen + 1, differentiated, currLen, i + 1);
         currLen--;
         differentiated -= currLen;
@@ -52,7 +105,20 @@ Array<double>* preProcess(const double* polynomial, const int n) {
     return polynomialRow;
 }
 
-void findRootsIterate_(Array < double > & allRoots, Array < int > & rootCounts, const Array<double>& polynomialRow, const int originalPolyLen, const unsigned precision) {
+void preProcess(const double* polynomial, const int n, double* polynomialRow) {
+    int currLen = n;
+    int pRLen = n * (n + 1) / 2 - 1;
+    double *differentiated;
+    differentiated = polynomialRow + pRLen - n;
+    memcpy(differentiated, polynomial, n * sizeof(double));
+    for (int i = 0; i < n - 1; i++) {
+        differentiateWithDivisor(differentiated - currLen + 1, differentiated, currLen, i + 1);
+        currLen--;
+        differentiated -= currLen;
+    }
+}
+
+void findRootsIterate_(Array<double>& allRoots, Array<int>& rootCounts, const Array<double>& polynomialRow, const int originalPolyLen, const unsigned precision) {
     int headInRow, headInRoots;
     const double zero = 0.;
     if (EQ_ZERO(polynomialRow[0])) {
@@ -158,11 +224,8 @@ int searchBetweenPeaks_(double* newRoots, const double* oldRoots, const int oldR
     }
     return newRootCount;
 }
-
+/*
 double approximateRoot(const double* polynomial, const int polyLen, double lowLimit, double highLimit, const unsigned precision) {
-
-    //while (equalsPrecise(lowLimit, highLimit, precision)) {
-    // subtraction too imprecise
     while (!equalsPrecise(lowLimit, highLimit, precision)) {
 
         double middle = (lowLimit + highLimit) / 2;
@@ -177,6 +240,13 @@ double approximateRoot(const double* polynomial, const int polyLen, double lowLi
         }
     }
     return (lowLimit + highLimit) / 2;
+}
+*/
+double approximateRoot(const double* polynomial, const int polyLen, double lowLimit, double highLimit, const unsigned precision) {
+     auto out = boost::math::tools::bisect([&] (double x) {
+        return solveForX(polynomial, polyLen, x);
+    },lowLimit, highLimit, boost::math::tools::eps_tolerance<double>());
+     return (out.first + out.second) / 2;
 }
 
 void differentiateWithDivisor(double* differentiated, double const* polynomial, int polyLen, int divisor) {
