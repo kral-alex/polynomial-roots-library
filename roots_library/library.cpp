@@ -5,6 +5,9 @@
 #include <vector>
 #include <cmath>
 
+#include "boost/math/tools/roots.hpp"
+
+
 #include "library.h"
 
 

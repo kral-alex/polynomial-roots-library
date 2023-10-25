@@ -6,7 +6,6 @@
 #define ROOTS___CORE_H
 
 #include <cmath>
-#include "boost/math/tools/roots.hpp"
 
 #include "Array.h"
 
