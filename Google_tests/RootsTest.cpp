@@ -8,6 +8,7 @@
 #include "RootsTest.h"
 
 //#include "../roots_library/library.h"
+//#include "../roots_library/library.h"
 
 namespace tests {
 
@@ -54,7 +55,7 @@ namespace tests {
             double res = solveForX(polynomial.data(), (int) polynomial.size(), root);
             std::cout << "\t" << root << ": " << res << "\n";
             // EXPECT_DOUBLE_EQ(res, 0.);
-            EXPECT_NEAR(res, 0., ACCEPTABLE_DELTA * pow(polynomial.size(), 5));
+            EXPECT_NEAR(res, 0., ACCEPTABLE_DELTA * pow(2, polynomial.size()));
         }
     }
 
