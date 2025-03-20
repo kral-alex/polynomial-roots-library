@@ -1,2 +1,2 @@
 # RootsLib
-Polynomial roots finding library in C++
+Library for finding the roots of n-degree polynomial equations.
