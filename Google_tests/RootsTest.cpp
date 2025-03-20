@@ -7,9 +7,6 @@
 #include "gtest/gtest.h"
 #include "RootsTest.h"
 
-//#include "../roots_library/library.h"
-//#include "../roots_library/library.h"
-
 namespace tests {
 
     constexpr double ACCEPTABLE_DELTA = 10e-10;

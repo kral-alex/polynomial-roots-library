@@ -12,14 +12,11 @@
 
 
 int findRoots(const double* polynomial, int len, double* roots) {
-    //auto polynomialRow = Array<double>((len + 1) * len / 2 - 1);
-    //preProcess(polynomial, len, polynomialRow.array());
     auto polynomialRow = std::unique_ptr<Array<double>>(preProcess(polynomial, len));
 
     auto allRoots = Array<double>((len - 1) * len / 2);
     auto rootCounts = Array<int>(len - 1);
 
-    // findRootsIterate_(allRoots.array(), rootCounts.array(), polynomialRow.array(), len, bitPrecision);
     findRootsIterate_(allRoots, rootCounts, *polynomialRow, len, 0);
 
     int rootCount = rootCounts[rootCounts.len() - 1];
@@ -29,14 +26,11 @@ int findRoots(const double* polynomial, int len, double* roots) {
 }
 
 int findRoots(Array<double>& polynomial, int len, double* roots) {
-    //auto polynomialRow = Array<double>((len + 1) * len / 2 - 1);
-    //preProcess(polynomial, len, polynomialRow.array());
     auto polynomialRow = preProcess(polynomial);
 
     auto allRoots = Array<double>((len - 1) * len / 2);
     auto rootCounts = Array<int>(len - 1);
 
-    // findRootsIterate_(allRoots.array(), rootCounts.array(), polynomialRow.array(), len, bitPrecision);
     findRootsIterate_(allRoots, rootCounts, *polynomialRow, len, 0);
 
     int rootCount = rootCounts[rootCounts.len() - 1];
@@ -53,7 +47,6 @@ std::vector<double>* findRoots(const std::vector<double>& polynomial, std::vecto
     auto allRoots = Array<double>((len - 1) * len / 2);
     auto rootCounts = Array<int>(len - 1);
 
-    // findRootsIterate_(allRoots.array(), rootCounts.array(), polynomialRow.array(), len, bitPrecision);
     findRootsIterate_(allRoots.array(), rootCounts.array(), polynomialRow, len, 0);
 
     int rootCount = rootCounts[rootCounts.len() - 1];
@@ -227,24 +220,8 @@ int searchBetweenPeaks_(double* newRoots, const double* oldRoots, const int oldR
     }
     return newRootCount;
 }
-/*
-double approximateRoot(const double* polynomial, const int polyLen, double lowLimit, double highLimit, const unsigned precision) {
-    while (!equalsPrecise(lowLimit, highLimit, precision)) {
 
-        double middle = (lowLimit + highLimit) / 2;
-        double middleValue = solveForX(polynomial, polyLen, middle);
 
-        if (EQ_ZERO(middleValue)) return middle;
-
-        if (signbit(solveForX(polynomial, polyLen, lowLimit)) != signbit(middleValue)) {
-            highLimit = middle;
-        } else {
-            lowLimit = middle;
-        }
-    }
-    return (lowLimit + highLimit) / 2;
-}
-*/
 double approximateRoot(const double* polynomial, const int polyLen, double lowLimit, double highLimit, const unsigned precision) {
      auto out = boost::math::tools::bisect([&] (double x) {
         return solveForX(polynomial, polyLen, x);
